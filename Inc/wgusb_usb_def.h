@@ -23,7 +23,7 @@ extern "C"
 
 /* USB Specification Versions */
 typedef enum{
-	usb_spec_bcd_2v00 = 0x0200		// Currently based on 2.00 spec
+	usb_spec_bcd_2v00 = 0x0200,		// Currently based on 2.00 spec
 	usb_spec_bcd_2v01 = 0x0201		// 2.01 spec required for BOS and LPM
 }wgusb_usb_spec_bcd_e;
 
@@ -92,7 +92,8 @@ typedef union{
 		wgusb_usb_endpt_type_e	type 	: 2;
 		uint8_t 				synch 	: 2; // (ISO Mode) 00 = No Synchonisation, 01 = Asynchronous, 10 = Adaptive, 11 = Synchronous
 		uint8_t 				usage 	: 2; // (ISO MOde) 00 = Data Endpoint, 01 = Feedback Endpoint, 10 = Explicit Feedback Data Endpoint, 11 = Reserved */
-	}	uint8_t 						: 2;
+		uint8_t 						: 2;
+	};
 	uint8_t b;						// The attributes as one byte
 }wgusb_usb_ep_attr_t;
 
