@@ -18,11 +18,21 @@ This file specifies the types created for and used in the Waveguide USB library
 // 			Status Enum
 ////////////////////////////////////
 
+/* Status Return Type */
 typedef enum{				// A standard status return 
 	WGUSB_Nominal = 0x00,
 
-	WGUSB_Error
+	WGUSB_Error,
+	WGUSB_Busy
 }wgusb_status_t;
+
+/* USB Device State */
+typedef enum{
+	usb_dev_state_default = 1,
+	usb_dev_state_addressed = 2,
+	usb_dev_state_configured = 3,
+	usb_dev_state_suspended = 4
+}wgusb_dev_state_e;
 
 
 
@@ -114,6 +124,7 @@ typedef struct _wgusb_intfc_handle_t{
 	// External
 	wgusb_intfc_desc_t*			descSettings;
 	wgusb_intfc_reactions_t* 	preactions;		// Pointer to a structure containing the reaction function pointers
+	void*						pData;
 
 	// Internal
 	struct _wgusb_cnfg_handle_t*	pCnfg;		// Parent configuration for this interface
@@ -243,12 +254,14 @@ typedef struct _wgusb_device_handle_t{
 
 	wgusb_usb_std_feat_e 	features;				// Lists active features (tet mode, remote wakeup)
 	wgusb_usb_link_state_e	linkState;				// Link Power Management state 
+	wgusb_dev_state_e		state;					// Device state
 	uint8_t 				addr;					// Device address, set by the system through the host's requests
 	wgusb_usb_speed_e		speed;					// Device speed
 	uint8_t 				config;					// Which config index is currently selected
 
 	wgusb_usb_setup_request_t setupRequest;			// Storage of the latest setup request received on EP0
 
+	void*					pDriver;
 
 
 
@@ -314,4 +327,19 @@ typedef struct _wgusb_device_handle_t{
 
 
 
-#endif /* __WGUSB_DEF_H_ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#endif /* __WGUSB_DEF_H_ */
