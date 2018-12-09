@@ -23,6 +23,7 @@ Aythor: Owen Lyke
 #define WGUSB_NUM_LANGID 1			// This is the number of language IDs that are stored in the 0th string descriptor
 
 
+// Add any necessary definitions for your driver below
 
 
 
