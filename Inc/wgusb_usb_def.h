@@ -24,6 +24,7 @@ extern "C"
 /* USB Specification Versions */
 typedef enum{
 	usb_spec_bcd_2v00 = 0x0200		// Currently based on 2.00 spec
+	usb_spec_bcd_2v01 = 0x0201		// 2.01 spec required for BOS and LPM
 }wgusb_usb_spec_bcd_e;
 
 /* USB Standard Features */
@@ -82,8 +83,18 @@ typedef union{
 		uint8_t 			: 3;	// Filler bits
 		wgusb_usb_dir_e dir : 1;	// The direction
 	};
-	uint8_t all;					// The entire address as one byte
+	uint8_t b;						// The entire address as one byte
 }wgusb_usb_ep_addr_t;
+
+/* USB Endpoint Attributes */
+typedef union{
+	struct{
+		wgusb_usb_endpt_type_e	type 	: 2;
+		uint8_t 				synch 	: 2; // (ISO Mode) 00 = No Synchonisation, 01 = Asynchronous, 10 = Adaptive, 11 = Synchronous
+		uint8_t 				usage 	: 2; // (ISO MOde) 00 = Data Endpoint, 01 = Feedback Endpoint, 10 = Explicit Feedback Data Endpoint, 11 = Reserved */
+	}	uint8_t 						: 2;
+	uint8_t b;						// The attributes as one byte
+}wgusb_usb_ep_attr_t;
 
 /* USB Endpoint States */
 typedef enum{
@@ -168,7 +179,7 @@ typedef struct{
 			wgusb_usb_request_type_e 	type 		: 2;	// Type of request
 			wgusb_usb_dir_e 			direction 	: 1;	// Direction of data stage (OUT when no data stage present)
 		};
-		uint8_t all;										// Whole request type field as a byte
+		uint8_t b;											// Whole request type field as a byte
 	}request_type;		// Characteristics of this request
 	uint8_t request;	// Which request is this (identifier)
 	uint16_t value;		// Contents depend on the request. 
@@ -211,10 +222,18 @@ typedef struct{
 
 /* USB Unicode Language Identifier */
 typedef struct{
-	uint8_t  bLength;           	/*!< Size of Descriptor in Bytes */
-	uint8_t  bDescriptorType;   	/*!< String Descriptor (0x03) */
-	uint16_t wLANGID[1];        	/*!< Supported Language Codes (e.g. 0x0409 English - United States) */
+	uint8_t  bLength;           		/*!< Size of Descriptor in Bytes */
+	uint8_t  bDescriptorType;   		/*!< String Descriptor (0x03) */
+	uint16_t wLANGID[WGUSB_NUM_LANGID]; /*!< Supported Language Codes (e.g. 0x0409 English - United States) */
 }__packed wgusb_usb_lang_id_t;
+
+/* USB String Descriptor */
+typedef struct{
+	uint8_t	 bLength;				/* Size of Descriptor in Bytes (Variable) */
+	uint8_t  bDescriptorType;   	/* !< String Descriptor (0x03) */
+	uint8_t* pUniString;			/* Pointer to the unicode string whose number of bytes is bLength-2*/
+}__packed wgusb_usb_string_desc_t;
+
 
 /* USB Interface Descriptor */
 typedef struct{
