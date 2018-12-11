@@ -104,7 +104,11 @@ typedef enum{
 	usb_ep_state_stall 		= 2,	// Endpoint is halted -> STALL
 	usb_ep_state_setup 		= 3,	// Endpoint is idle
 	usb_ep_state_data 		= 4,	// Endpoint is performing data trasfer
-	usb_ep_state_status 	= 5		// Endpoint is performing ZLP transfer
+	usb_ep_state_status 	= 5,	// Endpoint is performing ZLP transfer
+	usb_ep_state_data_in	= 6,	// Not part of the original list
+	usb_ep_state_data_out 	= 7,
+	usb_ep_state_setup_in	= 8,
+	usb_ep_state_setup_out 	= 9
 }wgusb_usb_ep_state_e;
 
 /* Link Power Management (LPM) States */

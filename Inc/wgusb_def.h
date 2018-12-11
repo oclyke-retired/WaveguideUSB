@@ -13,6 +13,10 @@ This file specifies the types created for and used in the Waveguide USB library
 
 #define WGUSB_MAX_ENDPTS_TOTAL (WGUSB_MAX_ENDPTS_IN + WGUSB_MAX_ENDPTS_OUT)
 
+#define LOBYTE(x)  ((uint8_t)(x & 0x00FFU))
+#define HIBYTE(x)  ((uint8_t)((x & 0xFF00U) >> 8U))
+#define MIN(a, b)  (((a) < (b)) ? (a) : (b))
+#define MAX(a, b)  (((a) > (b)) ? (a) : (b))
 
 ////////////////////////////////////
 // 			Status Enum
@@ -74,7 +78,7 @@ typedef struct{
 	struct{
 		uint8_t* pdata;
 		uint16_t length;
-		uint16_t progress;
+		uint16_t remaining;
 	}transfer;
 	wgusb_usb_endpt_type_e type;
 	wgusb_usb_ep_state_e state;
@@ -332,7 +336,24 @@ typedef struct _wgusb_device_handle_t{
 
 
 
+// Internal Functions (Not for the user)
+wgusb_status_t WGUSB_ParseSetupRequest(wgusb_usb_setup_request_t *req, uint8_t *pdata);
 
+wgusb_status_t WGUSB_StdDevReq (wgusb_device_handle_t* pdev, wgusb_usb_setup_request_t *req);
+wgusb_status_t WGUSB_StdItfReq(wgusb_device_handle_t* pdev, wgusb_usb_setup_request_t *req);
+wgusb_status_t WGUSB_StdEPReq(wgusb_device_handle_t* pdev, wgusb_usb_setup_request_t *req);
+
+
+
+
+// These functions use the user-provided driver functions to perform slightly higher level operations on the USB driver hardware
+wgusb_status_t  WGUSB_CtlSendData (wgusb_device_handle_t *pdev, uint8_t *pbuf, uint16_t len);
+wgusb_status_t  WGUSB_CtlContinueSendData (wgusb_device_handle_t  *pdev, uint8_t *pbuf, uint16_t len);
+wgusb_status_t 	WGUSB_CtlPrepareRx (wgusb_device_handle_t  *pdev, uint8_t *pbuf, uint16_t len);
+wgusb_status_t  WGUSB_CtlContinueRx (wgusb_device_handle_t  *pdev, uint8_t *pbuf, uint16_t len);
+wgusb_status_t  WGUSB_CtlSendStatus (wgusb_device_handle_t  *pdev);
+wgusb_status_t  WGUSB_CtlReceiveStatus (wgusb_device_handle_t  *pdev);
+uint32_t  		WGUSB_GetRxCount (wgusb_device_handle_t *pdev, wgusb_usb_ep_addr_t ep_addr);
 
 
 
